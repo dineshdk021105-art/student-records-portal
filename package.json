@@ -1,0 +1,21 @@
+{
+  "name": "student-records-portal",
+  "version": "1.0.0",
+  "description": "Full-stack university Student Records Portal built with React.js, Express.js, and MySQL matching the Stitch UI design.",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "start:backend": "cd backend && npm start",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "student-records",
+    "crud",
+    "mysql",
+    "react",
+    "express",
+    "vite"
+  ],
+  "author": "Student Records Portal Team",
+  "license": "ISC"
+}
