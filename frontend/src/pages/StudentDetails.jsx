@@ -21,7 +21,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import DeleteConfirmation from '../components/DeleteConfirmation';
-import { studentApi } from '../services/studentApi';
+import { studentApi, resolveImageUrl } from '../services/studentApi';
 import { useToast } from '../context/ToastContext';
 
 const StudentDetails = () => {
@@ -197,7 +197,7 @@ const StudentDetails = () => {
           >
             {student.image_url ? (
               <img
-                src={student.image_url}
+                src={resolveImageUrl(student.image_url)}
                 alt={student.name}
                 style={{
                   width: '100%',

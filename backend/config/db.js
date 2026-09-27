@@ -1,7 +1,13 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-const pool = mysql.createPool({
+// Determine SSL options for cloud MySQL (TiDB Cloud, Aiven, Railway, AWS RDS, PlanetScale)
+const isSSL =
+  process.env.DB_SSL === 'true' ||
+  process.env.DB_SSL === '1' ||
+  process.env.MYSQL_SSL === 'true';
+
+const poolConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
@@ -10,22 +16,45 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-});
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
+  ...(isSSL ? { ssl: { rejectUnauthorized: false } } : {}),
+};
+
+const pool = mysql.createPool(poolConfig);
 
 async function initDB() {
   try {
-    // Connect without selecting DB to ensure DB exists
-    const tempConnection = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '',
-      port: parseInt(process.env.DB_PORT, 10) || 3306,
-    });
+    // On local setups, attempt to create database if it doesn't already exist.
+    // On cloud managed MySQL (TiDB, Aiven, etc.), databases are usually pre-provisioned
+    // and non-root users lack CREATE DATABASE permissions, so wrap this in a safe try/catch.
+    const isLocal =
+      process.env.DB_HOST === 'localhost' ||
+      process.env.DB_HOST === '127.0.0.1' ||
+      !process.env.DB_HOST;
 
-    await tempConnection.query(
-      `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'student_portal'}\``
-    );
-    await tempConnection.end();
+    if (isLocal) {
+      try {
+        const tempConnection = await mysql.createConnection({
+          host: process.env.DB_HOST || 'localhost',
+          user: process.env.DB_USER || 'root',
+          password: process.env.DB_PASSWORD || '',
+          port: parseInt(process.env.DB_PORT, 10) || 3306,
+        });
+
+        await tempConnection.query(
+          `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'student_portal'}\``
+        );
+        await tempConnection.end();
+      } catch (localDbErr) {
+        console.warn('⚠️ Note on database auto-creation:', localDbErr.message);
+      }
+    }
+
+    // Verify active pool connection
+    const testConn = await pool.getConnection();
+    console.log(`🔌 Connected to MySQL database '${process.env.DB_NAME || 'student_portal'}' at ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 3306} (SSL: ${isSSL ? 'Enabled' : 'Disabled'})`);
+    testConn.release();
 
     // Create table if not exists
     await pool.query(`

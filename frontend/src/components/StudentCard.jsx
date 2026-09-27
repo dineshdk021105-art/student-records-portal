@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Contact, Phone, Pencil, Trash2, ArrowRight } from 'lucide-react';
+import { resolveImageUrl } from '../services/studentApi';
 
 const StudentCard = ({ student, onDelete }) => {
   const getInitials = (name) => {
@@ -20,7 +21,7 @@ const StudentCard = ({ student, onDelete }) => {
         <div className="student-profile-info">
           {student.image_url ? (
             <img
-              src={student.image_url}
+              src={resolveImageUrl(student.image_url)}
               alt={student.name}
               className="student-avatar"
               onError={(e) => {
