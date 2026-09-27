@@ -16,6 +16,8 @@ dist/
 dist-ssr/
 build/
 *.local
+cloudflared.exe
+*.exe
 
 # Uploads directory
 backend/uploads/
@@ -38,3 +40,6 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+.env*
