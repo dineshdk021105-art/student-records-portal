@@ -64,8 +64,7 @@ exports.getAllStudents = async (req, res) => {
       countParams.push(`%${department.trim()}%`);
     }
 
-    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
-    params.push(limitNum, offset);
+    query += ` ORDER BY created_at DESC LIMIT ${limitNum} OFFSET ${offset}`;
 
     const [students] = await pool.query(query, params);
     const [countResult] = await pool.query(countQuery, countParams);
