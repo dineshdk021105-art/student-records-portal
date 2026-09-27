@@ -8,6 +8,9 @@ import EditStudent from './pages/EditStudent';
 import StudentDetails from './pages/StudentDetails';
 import PlaceholderView from './pages/PlaceholderView';
 
+import Analytics from './pages/Analytics';
+import SettingsPage from './pages/Settings';
+
 function App() {
   return (
     <ToastProvider>
@@ -19,16 +22,7 @@ function App() {
           <Route path="/students/:id/edit" element={<EditStudent />} />
 
           {/* Secondary views */}
-          <Route
-            path="/analytics"
-            element={
-              <PlaceholderView
-                title="Campus Analytics"
-                description="View aggregate university academic progression metrics and department breakdown."
-                icon={TrendingUp}
-              />
-            }
-          />
+          <Route path="/analytics" element={<Analytics />} />
           <Route
             path="/admissions"
             element={
@@ -39,16 +33,7 @@ function App() {
               />
             }
           />
-          <Route
-            path="/settings"
-            element={
-              <PlaceholderView
-                title="System Settings"
-                description="Configure campus registrar credentials, automated SMS alerts, and database backup."
-                icon={Settings}
-              />
-            }
-          />
+          <Route path="/settings" element={<SettingsPage />} />
 
           {/* Catch-all redirect to Dashboard */}
           <Route path="*" element={<Navigate to="/" replace />} />
