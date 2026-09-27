@@ -123,20 +123,24 @@ const StudentForm = ({
       return;
     }
 
-    // Submit multipart FormData
-    const dataToSend = new FormData();
-    dataToSend.append('name', formData.name.trim());
-    dataToSend.append('department', formData.department);
-    dataToSend.append('register_number', formData.register_number.trim());
-    dataToSend.append('phone', formData.phone.trim());
-
+    // If image file is attached, use FormData; otherwise send clean JSON object
     if (imageFile) {
+      const dataToSend = new FormData();
+      dataToSend.append('name', formData.name.trim());
+      dataToSend.append('department', formData.department);
+      dataToSend.append('register_number', formData.register_number.trim());
+      dataToSend.append('phone', formData.phone.trim());
       dataToSend.append('image', imageFile);
-    } else if (formData.image_url) {
-      dataToSend.append('image_url', formData.image_url);
+      onSubmit(dataToSend);
+    } else {
+      onSubmit({
+        name: formData.name.trim(),
+        department: formData.department,
+        register_number: formData.register_number.trim(),
+        phone: formData.phone.trim(),
+        image_url: formData.image_url || '',
+      });
     }
-
-    onSubmit(dataToSend);
   };
 
   return (

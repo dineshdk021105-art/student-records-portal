@@ -19,8 +19,11 @@ const AddStudent = () => {
       }
     } catch (err) {
       console.error('Failed to create student:', err);
-      const message = err.response?.data?.message || 'Failed to add student. Please verify all fields.';
-      showToast(message, 'error');
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to add student. Please check that register number is unique and all fields are valid.';
+      showToast(message, 'error', 4500);
     } finally {
       setIsSubmitting(false);
     }

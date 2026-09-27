@@ -28,19 +28,19 @@ export const studentApi = {
   },
 
   // Create a new student (supports multipart FormData for photo file upload or JSON)
-  create: async (formData) => {
-    const isFormData = formData instanceof FormData;
-    const response = await axios.post(API_BASE, formData, {
-      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+  create: async (data) => {
+    const isFormData = data instanceof FormData;
+    const response = await axios.post(API_BASE, data, {
+      headers: isFormData ? {} : { 'Content-Type': 'application/json' },
     });
     return response.data;
   },
 
   // Update existing student
-  update: async (id, formData) => {
-    const isFormData = formData instanceof FormData;
-    const response = await axios.put(`${API_BASE}/${id}`, formData, {
-      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+  update: async (id, data) => {
+    const isFormData = data instanceof FormData;
+    const response = await axios.put(`${API_BASE}/${id}`, data, {
+      headers: isFormData ? {} : { 'Content-Type': 'application/json' },
     });
     return response.data;
   },
