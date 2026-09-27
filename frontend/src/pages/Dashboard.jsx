@@ -70,9 +70,13 @@ const Dashboard = () => {
         limit: 4,
       });
 
-      if (data.success) {
+      if (data && data.success && Array.isArray(data.students)) {
         setStudents(data.students);
-        setPagination(data.pagination);
+        if (data.pagination) {
+          setPagination(data.pagination);
+        }
+      } else {
+        throw new Error(data?.message || 'Failed to load students');
       }
     } catch (err) {
       console.error('Failed to load students:', err);
